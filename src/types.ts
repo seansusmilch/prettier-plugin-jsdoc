@@ -34,6 +34,12 @@ export interface JsdocOptions {
   tsdoc: boolean;
   jsdocLineWrappingStyle: "greedy";
   jsdocTagsOrder?: Record<string, number>;
+  /** Controls alias tag transformation strategy */
+  jsdocAliasTagsMode?: "normalize" | "preserve" | "prefer" | "strict";
+  /** Preferred alias per alias group (JSON string accepted in config, parsed at runtime) */
+  jsdocPreferredAliases?: Record<string, string> | string | undefined;
+  /** Strategy when conflicting alias duplicates exist */
+  jsdocAliasConflictStrategy?: "merge" | "first" | "last" | "error";
 }
 
 export interface AllOptions extends ParserOptions, JsdocOptions {}

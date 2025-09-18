@@ -1,6 +1,7 @@
 ---
 globs: *.js,*.ts,*.jsx,*.tsx
 description: whenever the user talks about modifying, adding, or removing rules for the prettier plugin
+alwaysApply: true
 ---
 ## Authoring JSDoc with prettier-plugin-jsdoc
 

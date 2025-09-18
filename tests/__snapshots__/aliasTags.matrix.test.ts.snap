@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alias options matrix modes without conflicts (single occurrences) mode normalize with JSON preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @class CtorTag
+ * @extends Base2
+ * @yields {string} YieldA
+ * @returns {number} Value.
+ */
+"
+`;
+
+exports[`alias options matrix modes without conflicts (single occurrences) mode prefer with JSON preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @constructor CtorTag
+ * @extends Base2
+ * @yield {string} YieldA
+ * @return {number} Value.
+ */
+"
+`;
+
+exports[`alias options matrix modes without conflicts (single occurrences) mode preserve with JSON preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @constructor CtorTag
+ * @extends Base2
+ * @yields {string} YieldA
+ * @returns {number} Value.
+ */
+"
+`;
+
+exports[`alias options matrix modes without conflicts (single occurrences) mode strict with JSON preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @constructor CtorTag
+ * @extends Base2
+ * @yield {string} YieldA
+ * @return {number} Value.
+ */
+"
+`;
+
+exports[`alias options matrix non-strict modes with duplicates should not resolve conflicts mode normalize with duplicates 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @fires EventB
+ * @class ClassTag
+ * @class CtorTag
+ * @extends Base1
+ * @extends Base2
+ * @yields {string} YieldA
+ * @yields {string} YieldB
+ * @returns {number} First return.
+ * @returns {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix non-strict modes with duplicates should not resolve conflicts mode prefer with duplicates 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @fires EventB
+ * @constructor ClassTag
+ * @constructor CtorTag
+ * @extends Base1
+ * @extends Base2
+ * @yield {string} YieldA
+ * @yield {string} YieldB
+ * @return {number} First return.
+ * @return {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix non-strict modes with duplicates should not resolve conflicts mode preserve with duplicates 1`] = `
+"/**
+ * Desc
+ *
+ * @emits EventA
+ * @fires EventB
+ * @class ClassTag
+ * @constructor CtorTag
+ * @augments Base1
+ * @extends Base2
+ * @yields {string} YieldA
+ * @yield {string} YieldB
+ * @return {number} First return.
+ * @returns {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy error with json preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @constructor ClassTag
+ * @extends Base1
+ * @yield {string} YieldA
+ * @return {number} First return.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy error without preferredAliases (fallback canonical) 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @class ClassTag
+ * @extends Base1
+ * @yields {string} YieldA
+ * @returns {number} First return.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy first with json preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @constructor ClassTag
+ * @extends Base1
+ * @yield {string} YieldA
+ * @return {number} First return.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy first without preferredAliases (fallback canonical) 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @class ClassTag
+ * @extends Base1
+ * @yields {string} YieldA
+ * @returns {number} First return.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy last with json preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @constructor CtorTag
+ * @extends Base2
+ * @yield {string} YieldB
+ * @return {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy last without preferredAliases (fallback canonical) 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventB
+ * @class CtorTag
+ * @extends Base2
+ * @yields {string} YieldB
+ * @returns {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy merge with json preferredAliases 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @constructor ClassTag
+ * @extends Base1
+ * @yield {string} YieldA
+ * @return {number} Second returns.
+ */
+"
+`;
+
+exports[`alias options matrix strict mode conflict strategies (duplicates present) strategy merge without preferredAliases (fallback canonical) 1`] = `
+"/**
+ * Desc
+ *
+ * @fires EventA
+ * @class ClassTag
+ * @extends Base1
+ * @yields {string} YieldA
+ * @returns {number} Second returns.
+ */
+"
+`;

@@ -158,6 +158,41 @@ const options = {
     default: undefined,
     description: "How many spaces will be used to separate tag elements.",
   },
+  jsdocAliasTagsMode: {
+    name: "jsdocAliasTagsMode",
+    type: "choice",
+    choices: [
+      { value: "normalize", description: "Normalize to plugin canonical tags" },
+      { value: "preserve", description: "Preserve author tag names as written" },
+      { value: "prefer", description: "Prefer user-configured aliases when normalizing" },
+      { value: "strict", description: "Prefer aliases and resolve conflicts deterministically" },
+    ] as ChoiceSupportOption["choices"],
+    category: "jsdoc",
+    default: "normalize",
+    description: "Controls whether and how alias tag names are transformed.",
+  },
+  jsdocPreferredAliases: {
+    name: "jsdocPreferredAliases",
+    type: "string",
+    category: "jsdoc",
+    default: undefined,
+    description:
+      "JSON object mapping alias group id to preferred tag (e.g., {\"returns\":\"return\"}).",
+  },
+  jsdocAliasConflictStrategy: {
+    name: "jsdocAliasConflictStrategy",
+    type: "choice",
+    choices: [
+      { value: "merge", description: "Merge duplicate alias entries into one" },
+      { value: "first", description: "Keep first occurrence, drop the rest" },
+      { value: "last", description: "Keep last occurrence, drop the rest" },
+      { value: "error", description: "Keep first occurrence unchanged (emit no-op warning)" },
+    ] as ChoiceSupportOption["choices"],
+    category: "jsdoc",
+    default: "merge",
+    description:
+      "What to do when a block contains multiple aliases from the same group in strict mode.",
+  },
 } as const satisfies Record<keyof JsdocOptions, SupportOption>;
 
 const defaultOptions: JsdocOptions = {
@@ -181,6 +216,9 @@ const defaultOptions: JsdocOptions = {
   tsdoc: options.tsdoc.default,
   jsdocLineWrappingStyle: options.jsdocLineWrappingStyle.default,
   jsdocTagsOrder: options.jsdocTagsOrder.default,
+  jsdocAliasTagsMode: options.jsdocAliasTagsMode.default as any,
+  jsdocPreferredAliases: options.jsdocPreferredAliases.default as any,
+  jsdocAliasConflictStrategy: options.jsdocAliasConflictStrategy.default as any,
 };
 
 const parsers = {
@@ -257,6 +295,16 @@ export type Options = Partial<JsdocOptions>;
 function normalizeOptions(options: prettier.ParserOptions & JsdocOptions) {
   if (options.jsdocTagsOrder) {
     options.jsdocTagsOrder = JSON.parse(options.jsdocTagsOrder as any);
+  }
+
+  if (options.jsdocPreferredAliases && typeof options.jsdocPreferredAliases === "string") {
+    try {
+      options.jsdocPreferredAliases = JSON.parse(
+        options.jsdocPreferredAliases as unknown as string,
+      ) as any;
+    } catch {
+      // ignore parse error; leave as is
+    }
   }
 
   if (options.jsdocCommentLineStrategy) {

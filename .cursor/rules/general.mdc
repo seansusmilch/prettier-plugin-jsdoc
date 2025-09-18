@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- never use `as any`
+- check your work with `yarn test`. no need to use `cd` or `| cat`

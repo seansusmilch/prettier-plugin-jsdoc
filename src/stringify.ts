@@ -19,14 +19,17 @@ import { AllOptions } from "./types.js";
 import { formatCode, isDefaultTag } from "./utils.js";
 
 const stringify = async (
-  { name, description, type, tag }: Spec,
+  rawTag: Spec,
   tagIndex: number,
   finalTagsArray: Spec[],
   options: AllOptions,
   maxTagTitleLength: number,
   maxTagTypeNameLength: number,
   maxTagNameLength: number,
+  renderTagOverride?: string,
 ): Promise<string> => {
+  const { name, type, tag } = rawTag;
+  let { description } = rawTag;
   let tagString = "\n";
 
   if (tag === SPACE_TAG_DATA.tag) {
@@ -63,10 +66,11 @@ const stringify = async (
     else if (maxTagNameLength) descGapAdj = maxTagNameLength + gap.length;
   }
 
+  const displayTag = renderTagOverride || tag;
   const useTagTitle = tag !== DESCRIPTION || jsdocDescriptionTag;
 
   if (useTagTitle) {
-    tagString += `@${tag}${" ".repeat(tagTitleGapAdj || 0)}`;
+    tagString += `@${displayTag}${" ".repeat(tagTitleGapAdj || 0)}`;
   }
   if (type) {
     const getUpdatedType = () => {

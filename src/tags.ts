@@ -1,4 +1,5 @@
 import { Spec } from "comment-parser";
+import { AllOptions } from "./types.js";
 
 const ABSTRACT = "abstract";
 const ASYNC = "async";
@@ -106,3 +107,59 @@ export {
   YIELDS,
   SPACE_TAG_DATA,
 };
+
+// --- Alias groups and helpers ---
+
+type AliasGroup = {
+  canonical: string;
+  aliases: string[];
+};
+
+// The alias groups reflect official JSDoc synonyms
+const ALIAS_GROUPS: Record<string, AliasGroup> = {
+  abstract: { canonical: ABSTRACT, aliases: ["virtual"] },
+  // Plugin canonical prefers "extends" over "augments"
+  augments: { canonical: EXTENDS, aliases: [AUGMENTS] },
+  class: { canonical: CLASS, aliases: ["constructor"] },
+  constant: { canonical: CONSTANT, aliases: ["const"] },
+  default: { canonical: DEFAULT, aliases: [DEFAULT_VALUE] },
+  description: { canonical: DESCRIPTION, aliases: ["desc"] },
+  emits: { canonical: FIRES, aliases: ["emits"] },
+  external: { canonical: EXTERNAL, aliases: ["host"] },
+  file: { canonical: FILE, aliases: ["fileoverview", "overview"] },
+  function: { canonical: FUNCTION, aliases: ["func", "method"] },
+  member: { canonical: MEMBER, aliases: ["var"] },
+  param: { canonical: PARAM, aliases: ["arg", "argument", "params"] },
+  property: { canonical: PROPERTY, aliases: ["prop"] },
+  returns: { canonical: RETURNS, aliases: ["return"] },
+  throws: { canonical: THROWS, aliases: ["exception"] },
+  yields: { canonical: YIELDS, aliases: ["yield"] },
+};
+
+function getAliasGroupId(tag: string): string | undefined {
+  const lower = tag.toLowerCase();
+  for (const [groupId, { canonical, aliases }] of Object.entries(
+    ALIAS_GROUPS,
+  )) {
+    if (lower === canonical || aliases.includes(lower)) return groupId;
+  }
+  return undefined;
+}
+
+function getGroupCanonical(groupId: string): string | undefined {
+  return ALIAS_GROUPS[groupId]?.canonical;
+}
+
+function resolvePreferredTagForGroup(
+  groupId: string,
+  options: AllOptions,
+): string {
+  const pref = options.jsdocPreferredAliases as
+    | Record<string, string>
+    | undefined;
+  const preferred = pref?.[groupId];
+  if (preferred) return preferred;
+  return getGroupCanonical(groupId) ?? groupId;
+}
+
+export { ALIAS_GROUPS, getAliasGroupId, getGroupCanonical, resolvePreferredTagForGroup };

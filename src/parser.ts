@@ -21,7 +21,7 @@ import {
 import { AST, AllOptions, PrettierComment } from "./types.js";
 import { stringify } from "./stringify.js";
 import { Parser } from "prettier";
-import { SPACE_TAG_DATA } from "./tags.js";
+import { SPACE_TAG_DATA, getAliasGroupId, resolvePreferredTagForGroup } from "./tags.js";
 
 const {
   name: nameTokenizer,
@@ -95,7 +95,7 @@ export const getParser = (originalParse: Parser["parse"], parserName: string) =>
           return;
         }
 
-        normalizeTags(parsed);
+        normalizeTags(parsed, options);
         convertCommentDescToDescTag(parsed);
 
         const commentContentPrintWidth = getIndentationWidth(
@@ -211,6 +211,7 @@ export const getParser = (originalParse: Parser["parse"], parserName: string) =>
 
         // Create final jsDoc string
         for (const [tagIndex, tagData] of filteredTags.entries()) {
+          const renderTagOverride = computeRenderTag(tagData, options);
           const formattedTag = await stringify(
             tagData,
             tagIndex,
@@ -219,6 +220,7 @@ export const getParser = (originalParse: Parser["parse"], parserName: string) =>
             maxTagTitleLength,
             maxTagTypeLength,
             maxTagNameLength,
+            renderTagOverride,
           );
           comment.value += formattedTag;
         }
@@ -366,56 +368,194 @@ const TAGS_ORDER_ENTRIES = Object.entries(TAGS_ORDER);
  *
  * @param parsed
  */
-function normalizeTags(parsed: Block): void {
-  parsed.tags = parsed.tags.map(
-    ({ tag, type, name, description, default: _default, ...rest }) => {
-      tag = tag || "";
-      type = type || "";
-      name = name || "";
-      description = description || "";
-      _default = _default?.trim();
+function normalizeTags(parsed: Block, options: AllOptions): void {
+  const mode = options.jsdocAliasTagsMode || "normalize";
 
-      /** When the space between tag and type is missing */
-      const tagSticksToType = tag.indexOf("{");
-      if (tagSticksToType !== -1 && tag[tag.length - 1] === "}") {
-        type = tag.slice(tagSticksToType + 1, -1) + " " + type;
-        tag = tag.slice(0, tagSticksToType);
+  // First pass: normalize structure and decide render tag per alias preferences
+  const normalized = parsed.tags.map(
+    ({ tag, type, name, description, default: _default, ...rest }) => {
+      let currentTag = tag || "";
+      let tagType = type || "";
+      let tagName = name || "";
+      let tagDescription = description || "";
+      const tagDefault = _default?.trim();
+
+      // Handle missing space between tag and type
+      const tagSticksToType = currentTag.indexOf("{");
+      if (tagSticksToType !== -1 && currentTag[currentTag.length - 1] === "}") {
+        tagType = currentTag.slice(tagSticksToType + 1, -1) + " " + tagType;
+        currentTag = currentTag.slice(0, tagSticksToType);
       }
 
-      tag = tag.trim();
-      const lower = tag.toLowerCase();
+      currentTag = currentTag.trim();
+      const lower = currentTag.toLowerCase();
+
+      // Find canonical casing if tag is known directly by TAGS_ORDER keys
       const tagIndex = TAGS_ORDER_ENTRIES.findIndex(
         ([key]) => key.toLowerCase() === lower,
       );
-      if (tagIndex >= 0) {
-        tag = TAGS_ORDER_ENTRIES[tagIndex][0];
+      // Determine alias group
+      const groupId = getAliasGroupId(lower);
+
+      // Logical tag (used for ordering/roles)
+      let logicalTag = currentTag;
+      if (groupId) {
+        // Always use group canonical for internal logic
+        logicalTag = TAGS_ORDER_ENTRIES.find(([key]) => key === getGroupCanonicalFallback(groupId))?.[0] || getGroupCanonicalFallback(groupId);
+      } else if (tagIndex >= 0) {
+        logicalTag = TAGS_ORDER_ENTRIES[tagIndex][0];
       } else if (lower in TAGS_SYNONYMS) {
-        // resolve synonyms
-        tag = TAGS_SYNONYMS[lower as keyof typeof TAGS_SYNONYMS];
+        logicalTag = TAGS_SYNONYMS[lower as keyof typeof TAGS_SYNONYMS];
       }
 
-      type = type.trim();
-      name = name.trim();
+      // Render tag decision based on mode
+      tagType = tagType.trim();
+      tagName = tagName.trim();
 
-      if (name && TAGS_NAMELESS.includes(tag)) {
-        description = `${name} ${description}`;
-        name = "";
+      if (tagName && TAGS_NAMELESS.includes(logicalTag)) {
+        tagDescription = `${tagName} ${tagDescription}`;
+        tagName = "";
       }
-      if (type && TAGS_TYPELESS.includes(tag)) {
-        description = `{${type}} ${description}`;
-        type = "";
+      if (tagType && TAGS_TYPELESS.includes(logicalTag)) {
+        tagDescription = `{${tagType}} ${tagDescription}`;
+        tagType = "";
       }
 
       return {
-        tag,
-        type,
-        name,
-        description,
-        default: _default,
+        tag: logicalTag,
+        type: tagType,
+        name: tagName,
+        description: tagDescription,
+        default: tagDefault,
         ...rest,
-      };
+      } as Spec;
     },
   );
+
+  // Strict mode conflict resolution for non-repeatable groups
+  parsed.tags = mode === "strict" ? applyAliasConflicts(normalized, options) : normalized;
+}
+
+function getGroupCanonicalFallback(groupId: string): string {
+  switch (groupId) {
+    case "abstract":
+      return "abstract";
+    case "augments":
+      return "extends";
+    case "class":
+      return "class";
+    case "constant":
+      return "constant";
+    case "default":
+      return "default";
+    case "description":
+      return "description";
+    case "emits":
+      return "fires";
+    case "external":
+      return "external";
+    case "file":
+      return "file";
+    case "function":
+      return "function";
+    case "member":
+      return "member";
+    case "param":
+      return "param";
+    case "property":
+      return "property";
+    case "returns":
+      return "returns";
+    case "throws":
+      return "throws";
+    case "yields":
+      return "yields";
+    default:
+      return groupId;
+  }
+}
+
+const NON_REPEATABLE_GROUPS = new Set(["returns", "class", "emits", "augments", "yields"]);
+
+function applyAliasConflicts(tags: Spec[], options: AllOptions) {
+  const strategy = options.jsdocAliasConflictStrategy || "merge";
+  const groups: Record<string, number[]> = {};
+
+  for (let i = 0; i < tags.length; i++) {
+    const t = tags[i];
+    const g = getAliasGroupId(t.tag);
+    if (g && NON_REPEATABLE_GROUPS.has(g)) {
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(i);
+    }
+  }
+
+  const toRemove = new Set<number>();
+  const out = [...tags];
+
+  for (const [, indices] of Object.entries(groups)) {
+    if (indices.length <= 1) continue;
+    if (strategy === "first") {
+      // Keep first
+      for (let k = 1; k < indices.length; k++) toRemove.add(indices[k]);
+      // keep first, remove others
+    } else if (strategy === "last") {
+      for (let k = 0; k < indices.length - 1; k++) toRemove.add(indices[k]);
+      // keep last
+    } else if (strategy === "error") {
+      // Keep first unchanged
+      for (let k = 1; k < indices.length; k++) toRemove.add(indices[k]);
+    } else {
+      // merge
+      const baseIndex = indices[0];
+      const base = out[baseIndex];
+      for (let k = 1; k < indices.length; k++) {
+        const idx = indices[k];
+        const cur = out[idx];
+        if (!base.type && cur.type) base.type = cur.type;
+        if (!base.name && cur.name) base.name = cur.name;
+        // Prefer longer description
+        if ((cur.description || "").length > (base.description || "").length) {
+          base.description = cur.description;
+        }
+        toRemove.add(idx);
+      }
+    }
+  }
+
+  return out.filter((_, i) => !toRemove.has(i));
+}
+
+function computeRenderTag(tag: Spec, options: AllOptions): string | undefined {
+  const mode = options.jsdocAliasTagsMode || "normalize";
+  if (mode === "preserve") {
+    const original = extractOriginalTagFromSource(tag);
+    return original || tag.tag;
+  }
+
+  if (mode === "prefer" || mode === "strict") {
+    const g = getAliasGroupId(tag.tag);
+    if (g) {
+      return resolvePreferredTagForGroup(g, options);
+    }
+    return undefined;
+  }
+
+  // normalize mode
+  return undefined;
+}
+
+function extractOriginalTagFromSource(tag: Spec): string | undefined {
+  try {
+    const src = tag.source || [];
+    for (const s of src) {
+      const m = /@([A-Za-z]+)/.exec(s.source);
+      if (m) return m[1].toLowerCase();
+    }
+    return undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

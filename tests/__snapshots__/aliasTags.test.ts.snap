@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`class strict constructor 1`] = `
+"/** @constructor CLASS */
+"
+`;
+
+exports[`emits prefer fires 1`] = `
+"/** @fires Something */
+"
+`;
+
+exports[`normalize mode 1`] = `
+"/**
+ * Desc
+ *
+ * @returns {Object} - Flat map of selected nodes.
+ * @returns {Object} Flat map of selected nodes.
+ */
+"
+`;
+
+exports[`prefer mode with returns -> return 1`] = `
+"/**
+ * Desc
+ *
+ * @return {Object} - Flat map of selected nodes.
+ * @return {Object} Flat map of selected nodes.
+ */
+"
+`;
+
+exports[`preserve mode 1`] = `
+"/**
+ * Desc
+ *
+ * @return {Object} - Flat map of selected nodes.
+ * @returns {Object} Flat map of selected nodes.
+ */
+"
+`;
+
+exports[`strict mode first 1`] = `
+"/**
+ * Desc
+ *
+ * @return {Object} Flat map of selected nodes.
+ */
+"
+`;
+
+exports[`strict mode merge 1`] = `
+"/**
+ * Desc
+ *
+ * @return {Object} - Flat map of selected nodes.
+ */
+"
+`;
