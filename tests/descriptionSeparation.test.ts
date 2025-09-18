@@ -29,6 +29,16 @@ test("disabled: no blank line between description and first tag", async () => {
   expect(
     await subject(input, { jsdocSeparateDescriptionFromTags: false }),
   ).toMatchSnapshot();
+
+  const input2 = `
+  /**
+   * 
+   * @param {number} a A
+   */
+  `;
+    expect(
+      await subject(input2, { jsdocSeparateDescriptionFromTags: false }),
+    ).toMatchSnapshot();
 });
 
 test("default: ensures one blank line even if input had none", async () => {
