@@ -187,12 +187,16 @@ Like code tags (` ```js `), header tags like `# Header`, or other Markdown featu
 | Key                                 | Type                              | Default      | Description                                                                                     |
 | :---------------------------------- | :-------------------------------- | :----------- | ----------------------------------------------------------------------------------------------- |
 | `jsdocSpaces`                       | Number                            | 1            |
+| `jsdocFormatDescriptions`           | Boolean                           | true         | When false, preserves original description text (no capitalization, trailing dot, wrapping, markdown tweaks, or default-note injection) |
 | `jsdocDescriptionWithDot`           | Boolean                           | false        |
 | `jsdocDescriptionTag`               | Boolean                           | false        |
 | `jsdocVerticalAlignment`            | Boolean                           | false        |
+| `jsdocSeparateDescriptionFromTags`  | Boolean                           | true         | Adds exactly one blank line between description and first tag; when false, preserves existing (collapses 2+ to one) |
 | `jsdocKeepUnParseAbleExampleIndent` | Boolean                           | false        |
+| `jsdocSingleLineComment`            | Boolean                           | true         | Deprecated. Use `jsdocCommentLineStrategy` instead |
 | `jsdocCommentLineStrategy`          | ("singleLine","multiline","keep") | "singleLine" |
 | `jsdocCapitalizeDescription`        | Boolean                           | true         |
+| `jsdocAddDefaultToDescription`      | Boolean                           | true         | Appends a note like `Default is \`value\`` to parameter descriptions |
 | `jsdocSeparateReturnsFromParam`     | Boolean                           | false        | Adds a space between last `@param` and `@returns`                                               |
 | `jsdocSeparateTagGroups`            | Boolean                           | false        | Adds a space between tag groups                                                                 |
 | `jsdocPreferCodeFences`             | Boolean                           | false        | Always fence code blocks (surround them by triple backticks)                                    |
@@ -200,6 +204,9 @@ Like code tags (` ```js `), header tags like `# Header`, or other Markdown featu
 | `jsdocPrintWidth`                   | Number                            | undefined    | If you don't set the value to `jsdocPrintWidth`, `printWidth` will be used as `jsdocPrintWidth` |
 | `jsdocLineWrappingStyle`            | String                            | "greedy"     | "greedy": lines wrap as soon as they reach `printWidth`                                         |
 | `jsdocTagsOrder`                    | String (object)                   | undefined    | See [Custom Tags Order](doc/CUSTOM_TAGS_ORDER.md)                                               |
+| `jsdocAliasTagsMode`                | ("normalize","preserve","prefer","strict") | "normalize" | Controls whether and how alias tag names are transformed. See [Alias Tags Options](doc/ALIAS_TAGS_OPTIONS.md) |
+| `jsdocPreferredAliases`             | String (object)                   | undefined    | JSON mapping of alias group id to preferred tag, e.g. `{ "returns": "return" }` |
+| `jsdocAliasConflictStrategy`        | ("merge","first","last","error") | "merge"      | Strategy when multiple aliases from the same group appear (in strict mode). See [Alias Tags Options](doc/ALIAS_TAGS_OPTIONS.md) |
 
 ### TSDoc
 
