@@ -143,7 +143,7 @@ export const getParser = (originalParse: Parser["parse"], parserName: string) =>
             return [tag];
           });
         }
-        if (options.jsdocAddDefaultToDescription) {
+        if (options.jsdocAddDefaultToDescription && options.jsdocFormatDescriptions !== false) {
           tags = tags.map(addDefaultValueToDescription);
         }
 

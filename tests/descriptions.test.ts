@@ -1084,3 +1084,50 @@ test("Markdown table replaced ", async () => {
 
   expect(result).toMatchSnapshot();
 });
+
+test("disabled: preserves block and tag descriptions", async () => {
+  const input = `
+/**
+ * process users and return stats
+ * this does NOT reflow or add punctuation.
+ *
+ * @param {User[]} users list of users to process (may be empty)
+ * @param {string} [name="John"] the name
+ * @returns {number} count of processed users
+ */`;
+
+
+  expect(await subject(input, { jsdocFormatDescriptions: false })).toMatchSnapshot();
+
+  const input2 = `
+/**
+ *    this description has indents
+ *      at the start of each line
+ * 
+ * @param {User[]} users list of users to process (may be empty)
+ * @param {string} [name="John"] the name
+ *     and more text in the 
+ *            description of this param
+ * @returns {number} count of processed users
+ */`;
+  
+  
+    expect(await subject(input2, { jsdocFormatDescriptions: false })).toMatchSnapshot();
+});
+
+test("disabled: keeps description-to-tags separation when enabled", async () => {
+  const input = `
+/**
+ * top description line 1
+ * line 2
+ *
+ * @param {number} a first
+ */`;
+
+  const output = await subject(input, {
+    jsdocFormatDescriptions: false,
+    jsdocSeparateDescriptionFromTags: true,
+  });
+
+  expect(output).toMatchSnapshot();
+});

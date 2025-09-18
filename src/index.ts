@@ -14,6 +14,14 @@ const options = {
     default: 1,
     description: "How many spaces will be used to separate tag elements.",
   },
+  jsdocFormatDescriptions: {
+    name: "jsdocFormatDescriptions",
+    type: "boolean",
+    category: "jsdoc",
+    default: true,
+    description:
+      "When false, preserve original description text as-is (no capitalization, trailing dot, wrapping, markdown tweaks, or default-note injection).",
+  },
   jsdocDescriptionWithDot: {
     name: "jsdocDescriptionWithDot",
     type: "boolean",
@@ -157,6 +165,7 @@ const defaultOptions: JsdocOptions = {
   jsdocPrintWidth: options.jsdocPrintWidth.default,
   jsdocDescriptionWithDot: options.jsdocDescriptionWithDot.default,
   jsdocDescriptionTag: options.jsdocDescriptionTag.default,
+  jsdocFormatDescriptions: options.jsdocFormatDescriptions.default,
   jsdocSeparateDescriptionFromTags:
     options.jsdocSeparateDescriptionFromTags.default,
   jsdocVerticalAlignment: options.jsdocVerticalAlignment.default,

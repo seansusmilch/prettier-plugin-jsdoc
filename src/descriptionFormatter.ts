@@ -74,6 +74,10 @@ async function formatDescription(
 ): Promise<string> {
   if (!text) return text;
 
+  if (options && options.jsdocFormatDescriptions === false) {
+    return text;
+  }
+
   const { printWidth } = options;
   const { tagStringLength = 0, beginningSpace } = formatOptions;
 
@@ -289,11 +293,15 @@ async function formatDescription(
                   _paragraph = _paragraph.replace(/\s+/g, " "); // Make single line
 
                   if (
+                    options.jsdocFormatDescriptions !== false &&
                     options.jsdocCapitalizeDescription &&
                     !TAGS_PEV_FORMATE_DESCRIPTION.includes(tag)
                   )
                     _paragraph = capitalizer(_paragraph);
-                  if (options.jsdocDescriptionWithDot)
+                  if (
+                    options.jsdocFormatDescriptions !== false &&
+                    options.jsdocDescriptionWithDot
+                  )
                     _paragraph = _paragraph.replace(/([\w\p{L}])$/u, "$1."); // Insert dot if needed
 
                   let result = breakDescriptionToLines(

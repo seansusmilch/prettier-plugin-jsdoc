@@ -6,6 +6,13 @@ export interface JsdocOptions {
   jsdocDescriptionWithDot: boolean;
   jsdocDescriptionTag: boolean;
   /**
+   * When false, preserve author-authored description text as-is for both block and per-tag descriptions.
+   * Disables capitalization, trailing dot insertion, wrapping, markdown tweaks, and default-note injection.
+   * Example code blocks (@example) are unaffected.
+   * @default true
+   */
+  jsdocFormatDescriptions: boolean;
+  /**
    * When true, enforce exactly one blank line between description and first tag.
    * When false (default), preserve whether a blank line exists, but collapse 2+ to one.
    */

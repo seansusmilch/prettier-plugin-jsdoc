@@ -810,6 +810,42 @@ exports[`description start underscores 1`] = `
 "
 `;
 
+exports[`disabled: keeps description-to-tags separation when enabled 1`] = `
+"/**
+ * top description line 1
+ * line 2
+ *
+ * @param {number} a first
+ */
+"
+`;
+
+exports[`disabled: preserves block and tag descriptions 1`] = `
+"/**
+ * process users and return stats
+ * this does NOT reflow or add punctuation.
+ *
+ * @param {User[]} users list of users to process (may be empty)
+ * @param {string} [name="John"] the name
+ * @returns {number} count of processed users
+ */
+"
+`;
+
+exports[`disabled: preserves block and tag descriptions 2`] = `
+"/**
+ * this description has indents
+ *      at the start of each line
+ *
+ * @param {User[]} users list of users to process (may be empty)
+ * @param {string} [name="John"] the name
+ *     and more text in the
+ *            description of this param
+ * @returns {number} count of processed users
+ */
+"
+`;
+
 exports[`empty lines 1`] = `
 "/**
  * Foo

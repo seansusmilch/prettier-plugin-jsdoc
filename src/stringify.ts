@@ -140,7 +140,10 @@ const stringify = async (
           ? ""
           : "  "; // google style guide space
 
-      if (
+      if (options.jsdocFormatDescriptions === false) {
+        // Preserve author-authored description without reflow/capitalization/punctuation
+        descriptionString = description;
+      } else if (
         (tag !== DESCRIPTION &&
           tagString.length + firstWord.length > printWidth) ||
         // tsdoc tags
@@ -164,6 +167,12 @@ const stringify = async (
 
     if (jsdocSeparateTagGroups) {
       descriptionString = descriptionString.trimEnd();
+    }
+
+    // When enforcing separation, remove trailing blank lines from the
+    // description so we end up with exactly one blank line before next tag.
+    if (tag === DESCRIPTION && jsdocSeparateDescriptionFromTags) {
+      descriptionString = descriptionString.replace(/\n[\t\x20]*$/g, "");
     }
 
     tagString += descriptionString.startsWith("\n")
