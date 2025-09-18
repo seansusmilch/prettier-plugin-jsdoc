@@ -18,12 +18,12 @@
   ],
   "scripts": {
     "prepare": "yarn build",
-    "lint": "eslint --ext '.ts' ./src",
-    "test": "yarn build --test && NODE_OPTIONS=\"--loader ts-node/esm\" jest",
+    "lint": "eslint --ext .ts ./src",
+    "test": "node scripts/build.cjs --compile-only && cross-env NODE_OPTIONS=\"--loader ts-node/esm\" jest",
     "release": "standard-version && yarn publish && git push --follow-tags origin master",
     "prettierAll": "prettier --write \"**/*.ts\"",
-    "clean": "rm -fr dist",
-    "build": "chmod +x ./script.sh && ./script.sh"
+    "clean": "rimraf --glob 'dist/*'",
+    "build": "yarn clean && node scripts/build.cjs"
   },
   "keywords": [
     "prettier",
@@ -51,6 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "commitlint": "^14.1.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
