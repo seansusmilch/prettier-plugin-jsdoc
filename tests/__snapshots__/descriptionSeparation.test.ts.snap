@@ -30,3 +30,12 @@ exports[`disabled: no blank line between description and first tag 2`] = `
 "/** @param {number} a A */
 "
 `;
+
+exports[`disabled: no blank line between description and first tag 3`] = `
+"/**
+ * @param {number} a A
+ * @param {number} b B
+ * @param {number} c C
+ */
+"
+`;
