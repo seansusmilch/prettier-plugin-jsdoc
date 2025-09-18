@@ -1,0 +1,112 @@
+---
+globs: *.js,*.ts,*.jsx,*.tsx
+description: whenever the user talks about modifying, adding, or removing rules for the prettier plugin
+---
+## Authoring JSDoc with prettier-plugin-jsdoc
+
+Use these conventions; the plugin will normalize spacing, capitalization, wrapping, and examples.
+
+### Single-line when short
+- Prefer compact single-line when it fits print width.
+
+```js
+/** @param {string} message Description */
+```
+
+### Spacing
+- Exactly one space between tag, type, name, and description.
+- Types use `{Type}` except for default-only tags (handled by the plugin).
+
+```js
+/** @returns {number} Count */
+/** @param {User} user User to process */
+```
+
+### Capitalization and trailing dot
+- Descriptions are capitalized automatically.
+- No enforced trailing period on the first sentence by default.
+
+### Vertical alignment
+- Off by default. Do not manually align columns; the formatter can do it when enabled.
+
+### Blank lines
+- **Description → first tag**: Preserved as-is by default. Set `jsdocSeparateDescriptionFromTags: true` to enforce exactly one blank line (multiple are collapsed to one).
+- **Between last `@param` and `@returns`**: Off by default. Enable with `jsdocSeparateReturnsFromParam`.
+- **Between tag groups**: Off by default. Enable with `jsdocSeparateTagGroups`.
+- **After `@example` or `@todo`**: One blank line is inserted when there are more tags below.
+
+### Line wrapping
+- Wrapped at Prettier `printWidth` (or `jsdocPrintWidth`) using greedy strategy.
+
+### @example
+- Use `@example`; `@examples` is auto-normalized.
+- Code is prettified. Fences are only added when `jsdocPreferCodeFences` is true or a language is specified.
+- Unparseable example blocks can keep their original indent with `jsdocKeepUnParseAbleExampleIndent`.
+
+```js
+/**
+ * @example
+ *   const one = 5;
+ *   const two = 10;
+ *   if (one > 2) {
+ *     two += one;
+ *   }
+ */
+```
+
+### Objects and typedefs
+- Object typedefs are compact, with spaced unions and semicolons.
+
+```js
+/**
+ * @typedef {Object} User
+ * @property {{
+ *   profileImageLink: any;
+ *   isBusinessUser: "isResellerUser" | "isBoolean" | "isSubUser" | "isNot";
+ *   shareCode: number;
+ *   referredBy: any;
+ * }} userId
+ * @property {number} id
+ */
+```
+
+### TSDoc mode
+- Enable with `"tsdoc": true`. Affects tags like `@remarks` and `@privateRemarks` and description placement.
+
+### Parameters and defaults
+- `@param` tags are reordered to match the function signature when detectable.
+- Optional/default params are rendered in the name: `name` → `[name]` or `[name=default]`; if the name is omitted, the type is widened with `| undefined`.
+- By default, a note like `Default is \`value\`` is appended to the description (`jsdocAddDefaultToDescription: true`).
+
+### Tag normalization
+- Common synonyms are normalized (e.g., `@params` → `@param`, `@examples` → `@example`, `@return` → `@returns`).
+- For nameless/typeless tags, stray name/type content is moved into the description.
+
+### Bypassing formatting
+- To opt-out for a comment, do not start with `/**`. Use `/* */` or `//`.
+
+### Configure the plugin in Prettier
+- `.prettierrc`:
+```json
+{
+  "plugins": ["prettier-plugin-jsdoc"]
+}
+```
+- `prettier.config.js`:
+```js
+export default { plugins: ["prettier-plugin-jsdoc"] };
+```
+- To disable for some files:
+```json
+{
+  "plugins": ["prettier-plugin-jsdoc"],
+  "overrides": [
+    { "files": "*.tsx", "options": { "plugins": [] } }
+  ]
+}
+```
+
+### Reference
+- Options and defaults live in `src/index.ts` (exported `options`).
+- Parsing/formatting pipeline: `src/parser.ts`, `src/stringify.ts`, `src/descriptionFormatter.ts`.
+- Tag roles/order: `src/roles.ts`; tag constants: `src/tags.ts`.

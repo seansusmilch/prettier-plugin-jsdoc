@@ -1,0 +1,85 @@
+---
+alwaysApply: true
+---
+## Prettier JSDoc Plugin: Where rules are declared and how they are used
+
+- The plugin’s Prettier options are declared in `src/index.ts` under the exported `options` object and wired through `parsers`.
+- Defaults are centralized in `src/index.ts` via `defaultOptions` and are normalized in `normalizeOptions`.
+- Parsing, tag normalization, ordering and formatting flow is implemented across:
+  - `src/parser.ts`: Integrates with Prettier’s parser, finds JSDoc blocks, parses tags with `comment-parser`, normalizes tags, sorts them (grouping and custom order), formats types and descriptions, then writes back formatted comment text.
+  - `src/stringify.ts`: Renders individual tags into lines respecting spacing, alignment, wrapping, `@example` code formatting, group spacing, and end-of-tag line behavior.
+  - `src/descriptionFormatter.ts`: Formats Markdown inside descriptions, applies capitalization and optional trailing dots, wraps text to print width, preserves/fences code blocks based on `jsdocPreferCodeFences`.
+  - `src/roles.ts` and `src/tags.ts`: Define tag constants, ordering weights, synonyms, and behavioral sets (e.g., which tags need names/types/descriptions, are vertically alignable, grouped, or preserve description formatting).
+
+### Configuration: enabling and scoping the plugin
+
+- Add the plugin to Prettier `plugins`.
+
+```json
+{
+  "plugins": ["prettier-plugin-jsdoc"]
+}
+```
+
+- Or in JS config:
+
+```js
+export default {
+  plugins: ["prettier-plugin-jsdoc"],
+};
+```
+
+- To disable for certain files, use Prettier `overrides` with an empty `plugins` list:
+
+```json
+{
+  "plugins": ["prettier-plugin-jsdoc"],
+  "overrides": [
+    {
+      "files": "*.tsx",
+      "options": { "plugins": [] }
+    }
+  ]
+}
+```
+
+### Key options and where they take effect
+
+- Declared: `src/index.ts` → `options`
+- Consumed primarily in:
+  - `src/parser.ts`: `getParser`, `sortTags`, `getTagOrderWeight`, `assignOptionalAndDefaultToName`
+  - `src/stringify.ts`: `stringify` (spacing, alignment, print width, description tag behavior)
+  - `src/descriptionFormatter.ts`: `formatDescription` (capitalization, trailing dot, code fences, wrapping)
+
+Examples:
+- `jsdocSpaces`, `jsdocVerticalAlignment`: impact gaps and alignment between tag, type, name, and description in `stringify.ts`.
+- `jsdocCommentLineStrategy`: normalized in `normalizeOptions` and affects whether single-line comments are compacted.
+- `jsdocSeparateReturnsFromParam`, `jsdocSeparateTagGroups`, `jsdocSeparateDescriptionFromTags`: handled in `parser.ts` to insert or normalize spacer entries.
+- `jsdocCapitalizeDescription`, `jsdocDescriptionWithDot`, `jsdocPreferCodeFences`, `jsdocPrintWidth`, `jsdocLineWrappingStyle`: applied during description formatting and wrapping.
+- `jsdocAddDefaultToDescription`: appends/updates a "Default is `value`" note on parameter descriptions.
+- `jsdocTagsOrder`: parsed from JSON in `normalizeOptions` and used by `getTagOrderWeight` for custom ordering; see `doc/CUSTOM_TAGS_ORDER.md`.
+
+### TSDoc mode
+
+- Option: `tsdoc` (declared in `src/index.ts`).
+- Changes description/tag handling for TSDoc-specific tags like `@remarks`/`@privateRemarks` in `stringify.ts` and ordering in `roles.ts`.
+
+### Other notable behaviors
+
+- Parameter order attempts to follow the function signature when it can be detected adjacent to the JSDoc block.
+- Optional parameters without a name widening receive `| undefined` in the type.
+- `@examples` is normalized to `@example`. Common tag synonyms are normalized; nameless/typeless tag content is moved to description.
+
+### Ignoring the plugin per comment
+
+- Use `/* */` or `//` comments instead of starting with `/**` to bypass JSDoc formatting.
+
+### Quick links
+
+- Options and defaults: `src/index.ts`
+- Parser and core flow: `src/parser.ts`
+- Tag rendering: `src/stringify.ts`
+- Description formatting: `src/descriptionFormatter.ts`
+- Tag roles/order: `src/roles.ts`
+- Tag constants: `src/tags.ts`
+- Custom tags order guide: `doc/CUSTOM_TAGS_ORDER.md`
