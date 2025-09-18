@@ -35,6 +35,14 @@ const options = {
     default: false,
     description: "Should tags, types, names and description be aligned",
   },
+  jsdocSeparateDescriptionFromTags: {
+    name: "jsdocSeparateDescriptionFromTags",
+    type: "boolean",
+    category: "jsdoc",
+    default: true,
+    description:
+      "Add exactly one blank line between description and first tag; when false, preserve existing (collapse 2+ to one)",
+  },
   jsdocKeepUnParseAbleExampleIndent: {
     name: "jsdocKeepUnParseAbleExampleIndent",
     type: "boolean",
@@ -149,6 +157,8 @@ const defaultOptions: JsdocOptions = {
   jsdocPrintWidth: options.jsdocPrintWidth.default,
   jsdocDescriptionWithDot: options.jsdocDescriptionWithDot.default,
   jsdocDescriptionTag: options.jsdocDescriptionTag.default,
+  jsdocSeparateDescriptionFromTags:
+    options.jsdocSeparateDescriptionFromTags.default,
   jsdocVerticalAlignment: options.jsdocVerticalAlignment.default,
   jsdocKeepUnParseAbleExampleIndent:
     options.jsdocKeepUnParseAbleExampleIndent.default,

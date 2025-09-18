@@ -42,6 +42,7 @@ const stringify = async (
     useTabs,
     tabWidth,
     jsdocSeparateTagGroups,
+    jsdocSeparateDescriptionFromTags,
   } = options;
   const gap = " ".repeat(jsdocSpaces);
 
@@ -171,10 +172,16 @@ const stringify = async (
   }
 
   // Add empty line after some tags if there is something below
-  tagString += descriptionEndLine({
-    tag,
-    isEndTag: tagIndex === finalTagsArray.length - 1,
-  });
+  const isEndTag = tagIndex === finalTagsArray.length - 1;
+
+  // Handle spacing after @description here to allow configurability
+  if (tag === DESCRIPTION && !isEndTag) {
+    if (jsdocSeparateDescriptionFromTags) {
+      tagString += "\n";
+    }
+  } else {
+    tagString += descriptionEndLine({ tag, isEndTag });
+  }
 
   return tagString;
 };

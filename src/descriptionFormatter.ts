@@ -43,9 +43,14 @@ function descriptionEndLine({
   tag,
   isEndTag,
 }: DescriptionEndLineParams): string {
-  if ([DESCRIPTION, EXAMPLE, TODO].includes(tag) && !isEndTag) {
-    return "\n";
-  }
+  if (isEndTag) return "";
+
+  // For @example and @todo, always add a blank line if there are tags below
+  if ([EXAMPLE, TODO].includes(tag)) return "\n";
+
+  // For @description, defer spacing decision to stringify based on
+  // jsdocSeparateDescriptionFromTags. Keep default here as no extra line.
+  if (tag === DESCRIPTION) return "";
 
   return "";
 }

@@ -5,6 +5,11 @@ export interface JsdocOptions {
   jsdocPrintWidth?: number;
   jsdocDescriptionWithDot: boolean;
   jsdocDescriptionTag: boolean;
+  /**
+   * When true, enforce exactly one blank line between description and first tag.
+   * When false (default), preserve whether a blank line exists, but collapse 2+ to one.
+   */
+  jsdocSeparateDescriptionFromTags: boolean;
   jsdocVerticalAlignment: boolean;
   jsdocKeepUnParseAbleExampleIndent: boolean;
   /**

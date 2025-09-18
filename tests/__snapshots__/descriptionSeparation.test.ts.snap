@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`default: enforce one blank line between description and first tag 1`] = `
+"/**
+ * Desc
+ *
+ * @param {number} a A
+ */
+"
+`;
+
+exports[`default: ensures one blank line even if input had none 1`] = `
+"/**
+ * Single line description
+ *
+ * @returns {number} N
+ */
+"
+`;
+
+exports[`disabled: no blank line between description and first tag 1`] = `
+"/**
+ * Desc
+ * @param {number} a A
+ */
+"
+`;
