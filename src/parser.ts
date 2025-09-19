@@ -565,13 +565,18 @@ function extractOriginalTagFromSource(tag: Spec): string | undefined {
  * @param parsed
  */
 function convertCommentDescToDescTag(parsed: Block): void {
-  let description = parsed.description || "";
+  const original = parsed.description || "";
+  let description = original;
   parsed.description = "";
 
   parsed.tags = parsed.tags.filter(({ description: _description, tag }) => {
     if (tag.toLowerCase() === DESCRIPTION) {
       if (_description.trim()) {
-        description += "\n\n" + _description;
+        // Only insert a separating blank line when there was an existing
+        // comment description above. If the top-level description was empty,
+        // just append the tag content directly so we don't create leading
+        // blank lines at the top of the JSDoc.
+        description += (description ? "\n\n" : "") + _description;
       }
       return false;
     } else {
