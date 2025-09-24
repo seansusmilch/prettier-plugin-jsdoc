@@ -20,6 +20,55 @@ exports[`@file 1`] = `
 "
 `;
 
+exports[`@file no leading star should keep single spaces 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + addDefault=false 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + aliasTagsMode=strict 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + formatDescriptions=false 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + printWidth=200 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + separateDescriptionFromTags=false 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
+exports[`@file no star + keep + tagsOrder string 1`] = `
+"/**
+ * @file Full screen mode manager
+ */
+"
+`;
+
 exports[`Bad defined name 1`] = `
 "/** @type {import("@jest/types/build/Config").InitialOptions} */
 /** @type {{ foo: string }} */

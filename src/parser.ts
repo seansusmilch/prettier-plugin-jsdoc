@@ -413,7 +413,20 @@ function normalizeTags(parsed: Block, options: AllOptions): void {
       tagName = tagName.trim();
 
       if (tagName && TAGS_NAMELESS.includes(logicalTag)) {
-        tagDescription = `${tagName} ${tagDescription}`;
+        // comment-parser note:
+        // - comment-parser tokenizes generically: tag -> type -> name -> description.
+        // - It does not know which tags are nameless (e.g. @file, @description, @example, @remarks).
+        // - For a line like `@file Full screen ...` (especially when the first
+        //   line had no leading `*`), comment-parser often assigns `Full` to `name`
+        //   and leaves ` description...` (with a leading space) as the description.
+        //
+        // Our normalization merges such stray `name` back into the description
+        // for nameless tags to match JSDoc semantics. While merging, we trim
+        // only a single leading space from the description to avoid producing
+        // a double space ("Full  screen") but keep any intentional indentation
+        // and newlines (lists, markdown blocks, etc.).
+        const descNoLeading = (tagDescription || "").replace(/^ /, "");
+        tagDescription = descNoLeading ? `${tagName} ${descNoLeading}` : tagName;
         tagName = "";
       }
       if (tagType && TAGS_TYPELESS.includes(logicalTag)) {
