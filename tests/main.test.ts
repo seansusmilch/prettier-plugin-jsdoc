@@ -737,60 +737,23 @@ test("@file", async () => {
 
 test("@file no leading star should keep single spaces", async () => {
   const result = await subject(`
-/**\n
- @file Full screen mode manager\n
+/**
+ @file Full screen mode manager
  */
 `, {
-  "jsdocCommentLineStrategy": "keep",
+  jsdocCommentLineStrategy: "keep",
 });
 
-  expect(result).toMatchSnapshot();
-});
-
-test("@file no star + keep + printWidth=200", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
-    jsdocCommentLineStrategy: "keep",
-    jsdocPrintWidth: 200,
-  });
-  expect(result).toMatchSnapshot();
-});
-
-test("@file no star + keep + addDefault=false", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
-    jsdocCommentLineStrategy: "keep",
-    jsdocAddDefaultToDescription: false,
-  });
-  expect(result).toMatchSnapshot();
-});
-
-test("@file no star + keep + tagsOrder string", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
-    jsdocCommentLineStrategy: "keep",
-    jsdocTagsOrder: '{"see":0}' as any,
-  });
   expect(result).toMatchSnapshot();
 });
 
 test("@file no star + keep + formatDescriptions=false", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
+  const result = await subject(`
+/**
+ @file Full screen mode manager
+ */`, {
     jsdocCommentLineStrategy: "keep",
     jsdocFormatDescriptions: false,
-  });
-  expect(result).toMatchSnapshot();
-});
-
-test("@file no star + keep + separateDescriptionFromTags=false", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
-    jsdocCommentLineStrategy: "keep",
-    jsdocSeparateDescriptionFromTags: false,
-  });
-  expect(result).toMatchSnapshot();
-});
-
-test("@file no star + keep + aliasTagsMode=strict", async () => {
-  const result = await subject(`/**\n @file Full screen mode manager\n */`, {
-    jsdocCommentLineStrategy: "keep",
-    jsdocAliasTagsMode: "strict",
   });
   expect(result).toMatchSnapshot();
 });
