@@ -73,25 +73,81 @@ const stringify = async (
     tagString += `@${displayTag}${" ".repeat(tagTitleGapAdj || 0)}`;
   }
   if (type) {
+    const hasObjectType = (value: string): boolean =>
+      /{[\s\S]*[A-z0-9_"]+ ?\??:[\s\S]*}/.test(value);
+    
+    const findMatchingBrace = (str: string, startIndex: number): number => {
+      let depth = 1;
+      for (let i = startIndex + 1; i < str.length; i++) {
+        if (str[i] === "{") depth++;
+        else if (str[i] === "}") {
+          depth--;
+          if (depth === 0) return i;
+        }
+      }
+      return -1;
+    };
+
+    const fixObjectSeparators = (objType: string): string => {
+      const separator = options.jsdocTypeSeparator;
+
+      const objects: { start: number; end: number; content: string }[] = [];
+      
+      // Find all object literals with proper brace matching
+      for (let i = 0; i < objType.length; i++) {
+        if (objType[i] === "{") {
+          const end = findMatchingBrace(objType, i);
+          if (end !== -1) {
+            const objectContent = objType.substring(i, end + 1);
+            // Check if this is an object type (has key: value pairs, including optional properties with ?)
+            if (/[A-z0-9_"]+ ?\??:/.test(objectContent)) {
+              objects.push({ start: i, end, content: objectContent });
+            }
+            i = end; // Skip past this object
+          }
+        }
+      }
+      
+      // Replace from end to start to maintain indices
+      let result = objType;
+      for (let j = objects.length - 1; j >= 0; j--) {
+        const { start, end, content } = objects[j];
+        let fixedContent = content;
+        
+        if (separator === "comma") {
+          // Replace semicolons with commas
+          fixedContent = content
+            .replace(/;(\s)/g, ",$1")
+            .replace(/;$/g, ",");
+        } else if (separator === "semicolon") {
+          // Replace commas with semicolons
+          fixedContent = content
+            .replace(/,(\s)/g, ";$1")
+            .replace(/,$/g, ";");
+        }
+        
+        result = result.substring(0, start) + fixedContent + result.substring(end + 1);
+      }
+      
+      return result;
+    };
+
     const getUpdatedType = () => {
+      // Apply separator conversion to all object types (including nested ones)
+      let processedType = type;
+      if (hasObjectType(type)) {
+        processedType = fixObjectSeparators(type);
+      }
+
       if (!isDefaultTag(tag)) {
-        return `{${type}}`;
+        return `{${processedType}}`;
       }
 
       // The space is to improve readability in non-monospace fonts
-      if (type === "[]") return "[ ]";
-      if (type === "{}") return "{ }";
+      if (processedType === "[]") return "[ ]";
+      if (processedType === "{}") return "{ }";
 
-      const isAnObject = (value: string): boolean =>
-        /^{.*[A-z0-9_]+ ?:.*}$/.test(value);
-      const fixObjectCommas = (objWithBrokenCommas: string): string =>
-        objWithBrokenCommas.replace(/; ([A-z0-9_])/g, ", $1");
-
-      if (isAnObject(type)) {
-        return fixObjectCommas(type);
-      }
-
-      return type;
+      return processedType;
     };
     const updatedType = getUpdatedType();
     tagString += gap + updatedType + " ".repeat(tagTypeGapAdj);

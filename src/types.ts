@@ -40,6 +40,8 @@ export interface JsdocOptions {
   jsdocPreferredAliases?: Record<string, string> | string | undefined;
   /** Strategy when conflicting alias duplicates exist */
   jsdocAliasConflictStrategy?: "merge" | "first" | "last" | "error";
+  /** Controls separator style in object types (commas vs semicolons) */
+  jsdocTypeSeparator?: "comma" | "semicolon";
 }
 
 export interface AllOptions extends ParserOptions, JsdocOptions {}

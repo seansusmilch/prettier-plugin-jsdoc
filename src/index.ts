@@ -193,6 +193,17 @@ const options = {
     description:
       "What to do when a block contains multiple aliases from the same group in strict mode.",
   },
+  jsdocTypeSeparator: {
+    name: "jsdocTypeSeparator",
+    type: "choice",
+    choices: [
+      { value: "comma", description: "Use commas to separate object type properties" },
+      { value: "semicolon", description: "Use semicolons to separate object type properties" },
+    ] as ChoiceSupportOption["choices"],
+    category: "jsdoc",
+    default: "semicolon",
+    description: "Controls separator style (commas vs semicolons) in object types.",
+  },
 } as const satisfies Record<keyof JsdocOptions, SupportOption>;
 
 const defaultOptions: JsdocOptions = {
@@ -216,9 +227,10 @@ const defaultOptions: JsdocOptions = {
   tsdoc: options.tsdoc.default,
   jsdocLineWrappingStyle: options.jsdocLineWrappingStyle.default,
   jsdocTagsOrder: options.jsdocTagsOrder.default,
-  jsdocAliasTagsMode: options.jsdocAliasTagsMode.default as any,
-  jsdocPreferredAliases: options.jsdocPreferredAliases.default as any,
-  jsdocAliasConflictStrategy: options.jsdocAliasConflictStrategy.default as any,
+  jsdocAliasTagsMode: options.jsdocAliasTagsMode.default,
+  jsdocPreferredAliases: options.jsdocPreferredAliases.default,
+  jsdocAliasConflictStrategy: options.jsdocAliasConflictStrategy.default,
+  jsdocTypeSeparator: options.jsdocTypeSeparator.default,
 };
 
 const parsers = {

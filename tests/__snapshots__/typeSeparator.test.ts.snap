@@ -1,0 +1,174 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jsdocTypeSeparator option React component type definitions should convert to commas with comma mode 1`] = `
+"/**
+ * Badge component to display various badges with icons and text.
+ *
+ * @type {React.FC<{
+ *   badges?: string[],
+ *   showInfobox?: boolean,
+ *   infobox?: React.ReactNode,
+ * }>}
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option React component type definitions should convert to semicolons with default mode 1`] = `
+"/**
+ * Badge component to display various badges with icons and text.
+ *
+ * @type {React.FC<{
+ *   badges?: string[];
+ *   showInfobox?: boolean;
+ *   infobox?: React.ReactNode;
+ * }>}
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option React component type definitions should convert to semicolons with explicit semicolon mode 1`] = `
+"/**
+ * Badge component to display various badges with icons and text.
+ *
+ * @type {React.FC<{
+ *   badges?: string[];
+ *   showInfobox?: boolean;
+ *   infobox?: React.ReactNode;
+ * }>}
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option comma mode - convert all to commas should convert mixed separators to commas 1`] = `
+"/**
+ * The summary
+ *
+ * @default {
+ *   first: "a",
+ *   second: "b",
+ *   third: "c",
+ *   fourth: { nested: "d", also: "e" },
+ * }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option comma mode - convert all to commas should convert semicolons to commas in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value", nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option comma mode - convert all to commas should keep commas in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value", nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option default (semicolon) - convert to semicolons should convert commas to semicolons in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value"; nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option default (semicolon) - convert to semicolons should convert mixed separators to semicolons 1`] = `
+"/**
+ * The summary
+ *
+ * @default {
+ *   first: "a";
+ *   second: "b";
+ *   third: "c";
+ *   fourth: { nested: "d"; also: "e" };
+ * }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option default (semicolon) - convert to semicolons should keep semicolons in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value"; nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option semicolon mode - convert all to semicolons should convert commas to semicolons in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value"; nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option semicolon mode - convert all to semicolons should convert mixed separators to semicolons 1`] = `
+"/**
+ * The summary
+ *
+ * @default {
+ *   first: "a";
+ *   second: "b";
+ *   third: "c";
+ *   fourth: { nested: "d"; also: "e" };
+ * }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option semicolon mode - convert all to semicolons should keep semicolons in @default object 1`] = `
+"/**
+ * The summary
+ *
+ * @default { object: "value"; nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option should not affect non-object types should not affect @param types 1`] = `
+"/**
+ * Function description
+ *
+ * @param {string | number} param1 First param
+ * @param {string[]} param2 Second param
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option should not affect non-object types should not affect empty objects or arrays 1`] = `
+"/**
+ * The summary
+ *
+ * @default [ ]
+ * @defaultValue { }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option works with @defaultValue tag comma mode with @defaultValue 1`] = `
+"/**
+ * The summary
+ *
+ * @defaultValue { object: "value", nestingTest: { obj: "nested" } }
+ */
+"
+`;
+
+exports[`jsdocTypeSeparator option works with @defaultValue tag semicolon mode with @defaultValue 1`] = `
+"/**
+ * The summary
+ *
+ * @defaultValue { object: "value"; nestingTest: { obj: "nested" } }
+ */
+"
+`;

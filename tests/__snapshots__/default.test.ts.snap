@@ -13,7 +13,7 @@ exports[`@default filled object 1`] = `
 "/**
  * The summary
  *
- * @default { object: "value", nestingTest: { obj: "nested" } }
+ * @default { object: "value"; nestingTest: { obj: "nested" } }
  */
 "
 `;
@@ -31,7 +31,7 @@ exports[`@defaultValue filled object 1`] = `
 "/**
  * The summary
  *
- * @defaultValue { object: "value", nestingTest: { obj: "nested" } }
+ * @defaultValue { object: "value"; nestingTest: { obj: "nested" } }
  */
 "
 `;
